@@ -1,18 +1,31 @@
 use std::env;
-use std::fs;
+use std::process;
+
+// added this just to fix intellisense autocomplete
+extern crate minigrep;
+
+use minigrep::Config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
     // println!("{:#?}", args);
 
-    let query = &args[1];
-    let filename = &args[2];
+    let config = Config::new(&args).unwrap_or_else(|err| {
+        println!("Problem parsins arguments: {}", err);
+        process::exit(1);
+    });
 
-    println!("Searching for {}", query);
-    println!("In file {}", filename);
+    // println!("Searching for {}", config.query);
+    // println!("In file {}", config.filename);
 
-    let contents = fs::read_to_string(filename).expect("Something went wrong reading the filename");
-
-    println!("With text:\n{}", contents);
+    // The run function doesn’t return a value that we want to unwrap
+    // in the same way that Config::new returns the Config instance.
+    // Because run returns () in the success case, we only care about detecting
+    // an error, so we don’t need unwrap_or_else to return the unwrapped value
+    // because it would only be ()
+    if let Err(e) = minigrep::run(config) {
+        println!("Application error: {}", e);
+        process::exit(1);
+    }
 }
