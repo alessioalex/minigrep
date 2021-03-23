@@ -12,7 +12,7 @@ fn main() {
     // println!("{:#?}", args);
 
     let config = Config::new(&args).unwrap_or_else(|err| {
-        println!("Problem parsins arguments: {}", err);
+        eprintln!("Problem parsins arguments: {}", err);
         process::exit(1);
     });
 
@@ -25,7 +25,7 @@ fn main() {
     // an error, so we don’t need unwrap_or_else to return the unwrapped value
     // because it would only be ()
     if let Err(e) = minigrep::run(config) {
-        println!("Application error: {}", e);
+        eprintln!("Application error: {}", e);
         process::exit(1);
     }
 }
